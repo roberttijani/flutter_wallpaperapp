@@ -3,6 +3,7 @@ import 'package:flutter_wallpaperapp/widgets/widgets.dart';
 import 'package:flutter_wallpaperapp/models/categorie_model.dart';
 
 import '../data/data.dart';
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -18,6 +19,24 @@ class _HomeState extends State<Home> {
   void initState() {
     categories = getCategories();
     super.initState();
+    getTrendingWallpaper() async {
+      await http.get(
+          "https://api.pexels.com/v1/curated?per_page=$noOfImageToLoad&page=1",
+          headers: {"Authorization": apiKEY}).then((value) {
+        //print(value.body);
+
+        Map<String, dynamic> jsonData = jsonDecode(value.body);
+        jsonData["photos"].forEach((element) {
+          //print(element);
+          PhotosModel photosModel = new PhotosModel();
+          photosModel = PhotosModel.fromMap(element);
+          photos.add(photosModel);
+          //print(photosModel.toString()+ "  "+ photosModel.src.portrait);
+        });
+
+        setState(() {});
+      });
+    }
   }
 
   Widget build(BuildContext context) {
