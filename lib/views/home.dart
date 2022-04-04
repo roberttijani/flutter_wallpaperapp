@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_wallpaperapp/widgets/widgets.dart';
 import 'package:flutter_wallpaperapp/models/categorie_model.dart';
 
+import '../data/data.dart';
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -10,7 +12,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<CategorieModel> categories = new List();
+  List<CategorieModel> categories = new List.empty();
 
   @override
   void initState() {
@@ -18,7 +20,6 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -26,44 +27,61 @@ class _HomeState extends State<Home> {
         elevation: 0.0,
       ),
       body: Container(
-  decoration: BoxDecoration(
-    color: Color(0xfff5f8fd),
-    borderRadius: BorderRadius.circular(30),
-  ),
-  margin: EdgeInsets.symmetric(horizontal: 24),
-  padding: EdgeInsets.symmetric(horizontal: 24),
-  child: Row(
-    children: <Widget>[
-      Expanded(
-          child: TextField(
-        controller: searchController,
-        decoration: InputDecoration(
-            hintText: "search wallpapers",
-            border: InputBorder.none),
-      )),
-      InkWell(
-          onTap: () {
-            if (searchController.text != "") {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SearchView(
-                            search: searchController.text,
-                          )));
-            }
-          },
-          child: Container(child: Icon(Icons.search)))
-    ],
-  ),
-),,
+        decoration: BoxDecoration(
+          color: Color(0xfff5f8fd),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 24),
+        padding: EdgeInsets.symmetric(horizontal: 24),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+                child: TextField(
+              controller: searchController,
+              decoration: InputDecoration(
+                  hintText: "search wallpapers", border: InputBorder.none),
+            )),
+            InkWell(
+                onTap: () {
+                  if (searchController.text != "") {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SearchView(
+                                  search: searchController.text,
+                                )));
+                  }
+                },
+                child: Container(child: Icon(Icons.search))),
+            SizedBox(
+              height: 16,
+            ),
+            Container(
+              height: 80,
+              child: ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  itemCount: categories.length,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    /// Create List Item tile
+                    return CategoriesTile(
+                      imgUrls: categories[index].imgUrl,
+                      categorie: categories[index].categorieName,
+                    );
+                  }),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class CategoriesTile extends StatelessWidget {
-  final String imgUrl, categorie;
+  final String imgUrls, categorie;
 
-  CategoriesTile({@required this.imgUrl, @required this.categorie});
+  CategoriesTile({@required this.imgUrls, @required this.categorie});
 
   @override
   Widget build(BuildContext context) {
@@ -85,13 +103,13 @@ class CategoriesTile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       child: kIsWeb
                           ? Image.network(
-                              imgUrl,
+                              imgUrls,
                               height: 50,
                               width: 100,
                               fit: BoxFit.cover,
                             )
                           : CachedNetworkImage(
-                              imageUrl: imgUrl,
+                              imageUrl: imgUrls,
                               height: 50,
                               width: 100,
                               fit: BoxFit.cover,
@@ -118,13 +136,13 @@ class CategoriesTile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       child: kIsWeb
                           ? Image.network(
-                              imgUrl,
+                              imgUrls,
                               height: 50,
                               width: 100,
                               fit: BoxFit.cover,
                             )
                           : CachedNetworkImage(
-                              imageUrl: imgUrl,
+                              imageUrl: imgUrls,
                               height: 50,
                               width: 100,
                               fit: BoxFit.cover,
